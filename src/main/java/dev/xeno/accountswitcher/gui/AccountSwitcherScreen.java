@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Set;
 
 public class AccountSwitcherScreen extends Screen {
-    private static final int ENTRY_H = 24;
-    private static final int LIST_TOP = 48;
+    private static final int ENTRY_H = 26;
+    private static final int LIST_TOP = 52;
     private static final int LIST_W = 320;
+    private static final int FOOTER = 104;
 
     private final Screen parent;
     private List<SavedAccount> accounts = new ArrayList<>();
@@ -63,40 +64,46 @@ public class AccountSwitcherScreen extends Screen {
     protected void init() {
         reloadAccounts();
         int cx = this.width / 2;
-        int bottom = this.height - 28;
+        int revertY = this.height - 96; // Revert
+        int rowY = this.height - 72;    // Add / Switch / Remove
+        int backY = this.height - 48;   // Back
 
         this.addDrawableChild(ButtonWidget.builder(
-            Text.literal("↺ " + AccountSwitcherMod.originalSession.getUsername()),
+            Text.translatable("accountswitcher.button.revert", AccountSwitcherMod.originalSession.getUsername()),
             btn -> revert()
-        ).dimensions(cx - 100, bottom - 48, 200, 20).build());
+        ).dimensions(cx - 154, revertY, 308, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(
             Text.translatable("accountswitcher.button.add"),
             btn -> this.client.setScreen(new AddAccountScreen(this))
-        ).dimensions(cx - 160, bottom - 24, 100, 20).build());
+        ).dimensions(cx - 154, rowY, 100, 20).build());
 
         switchBtn = ButtonWidget.builder(
             Text.translatable("accountswitcher.button.switch"),
             btn -> switchToSelected()
-        ).dimensions(cx - 55, bottom - 24, 110, 20).build();
+        ).dimensions(cx - 50, rowY, 100, 20).build();
         switchBtn.active = false;
         this.addDrawableChild(switchBtn);
 
         removeBtn = ButtonWidget.builder(
             Text.translatable("accountswitcher.button.remove"),
             btn -> removeSelected()
-        ).dimensions(cx + 60, bottom - 24, 100, 20).build();
+        ).dimensions(cx + 54, rowY, 100, 20).build();
         removeBtn.active = false;
         this.addDrawableChild(removeBtn);
 
         this.addDrawableChild(ButtonWidget.builder(
             Text.translatable("accountswitcher.button.back"),
             btn -> this.client.setScreen(parent)
-        ).dimensions(cx - 100, bottom, 200, 20).build());
+        ).dimensions(cx - 100, backY, 200, 20).build());
+    }
+
+    private int listBottom() {
+        return this.height - FOOTER;
     }
 
     private int visibleRows() {
-        return Math.max(1, (this.height - LIST_TOP - 62) / ENTRY_H);
+        return Math.max(1, (listBottom() - LIST_TOP) / ENTRY_H);
     }
 
     @Override
@@ -104,55 +111,50 @@ public class AccountSwitcherScreen extends Screen {
         int cx = this.width / 2;
         ctx.fill(0, 0, this.width, this.height, Palette.BG);
 
-        ctx.drawCenteredTextWithShadow(this.textRenderer, "LazySwitcher", cx, 12, Palette.TITLE);
-        ctx.drawCenteredTextWithShadow(this.textRenderer,
-            Text.translatable("accountswitcher.screen.tagline"), cx, 23, Palette.TEXT_DIM);
-        ctx.fill(cx - LIST_W / 2, 36, cx + LIST_W / 2, 37, Palette.DIVIDER);
-
-        String cur = "Playing as " + this.client.getSession().getUsername();
-        int barY = this.height - 58;
-        if (!status.isEmpty())
-            ctx.drawCenteredTextWithShadow(this.textRenderer, status, cx, barY, statusColor);
-        else
-            ctx.drawCenteredTextWithShadow(this.textRenderer, cur, cx, barY, Palette.TEXT_DIM);
+        ctx.drawCenteredTextWithShadow(this.textRenderer, "LazySwitcher", cx, 14, Palette.TITLE);
+        String cur = "playing as " + this.client.getSession().getUsername();
+        ctx.drawCenteredTextWithShadow(this.textRenderer, cur, cx, 26, Palette.TEXT_DIM);
+        ctx.fill(cx - LIST_W / 2, 40, cx + LIST_W / 2, 41, Palette.DIVIDER);
 
         int lx = cx - LIST_W / 2;
         int rows = visibleRows();
-        for (int i = scrollOffset; i < Math.min(accounts.size(), scrollOffset + rows); i++) {
+        int shown = Math.min(accounts.size(), scrollOffset + rows);
+        for (int i = scrollOffset; i < shown; i++) {
             SavedAccount acc = accounts.get(i);
             int y = LIST_TOP + (i - scrollOffset) * ENTRY_H;
+            int rowH = ENTRY_H - 3;
             boolean sel = i == selectedIndex;
-            boolean hover = mouseX >= lx && mouseX <= lx + LIST_W && mouseY >= y && mouseY < y + ENTRY_H - 2;
-            ctx.fill(lx, y, lx + LIST_W, y + ENTRY_H - 2, sel ? Palette.ROW_SEL : Palette.ROW);
-            if (hover && !sel) ctx.fill(lx, y, lx + LIST_W, y + ENTRY_H - 2, Palette.ROW_HOVER);
+            boolean hover = mouseX >= lx && mouseX <= lx + LIST_W && mouseY >= y && mouseY < y + rowH;
+            ctx.fill(lx, y, lx + LIST_W, y + rowH, sel ? Palette.ROW_SEL : Palette.ROW);
+            if (hover && !sel) ctx.fill(lx, y, lx + LIST_W, y + rowH, Palette.ROW_HOVER);
 
             boolean isPrism = i < prismCount;
             int badge = Palette.badge(isPrism, acc.type);
-            ctx.fill(lx, y, lx + 3, y + ENTRY_H - 2, badge);
+            ctx.fill(lx, y, lx + 3, y + rowH, badge);
 
-            ctx.drawTextWithShadow(this.textRenderer, Text.literal(acc.username), lx + 10, y + 4, Palette.TEXT);
-            String sub = isPrism ? "Prism import" : switch (acc.type) {
+            ctx.drawTextWithShadow(this.textRenderer, Text.literal(acc.username), lx + 12, y + 3, Palette.TEXT);
+            String sub = isPrism ? "Prism" : switch (acc.type) {
                 case MICROSOFT   -> "Microsoft";
                 case OFFLINE     -> "Offline";
                 case ALT_SERVICE -> "Alt service";
             };
-            ctx.drawTextWithShadow(this.textRenderer, Text.literal(sub), lx + 10, y + 13, Palette.TEXT_DIM);
+            ctx.drawTextWithShadow(this.textRenderer, Text.literal(sub), lx + 12, y + 13, Palette.TEXT_DIM);
 
             String tag = isPrism ? "PRISM" : switch (acc.type) {
                 case MICROSOFT   -> "MSA";
                 case OFFLINE     -> "OFFLINE";
                 case ALT_SERVICE -> "ALT";
             };
-            int tagW = this.textRenderer.getWidth(tag);
-            ctx.drawTextWithShadow(this.textRenderer, Text.literal(tag), lx + LIST_W - tagW - 8, y + 8, badge);
+            ctx.drawTextWithShadow(this.textRenderer, Text.literal(tag),
+                lx + LIST_W - this.textRenderer.getWidth(tag) - 10, y + 8, badge);
         }
 
         if (accounts.isEmpty())
             ctx.drawCenteredTextWithShadow(this.textRenderer,
-                "No accounts yet - use Add Account", cx, LIST_TOP + 10, Palette.TEXT_DIM);
+                "No accounts yet — use Add Account", cx, LIST_TOP + 12, Palette.TEXT_DIM);
 
-        ctx.drawCenteredTextWithShadow(this.textRenderer,
-            Text.translatable("accountswitcher.hint.reconnect"), cx, this.height - 48, Palette.TEXT_DIM);
+        if (!status.isEmpty())
+            ctx.drawCenteredTextWithShadow(this.textRenderer, status, cx, this.height - 110, statusColor);
 
         super.render(ctx, mouseX, mouseY, delta);
     }

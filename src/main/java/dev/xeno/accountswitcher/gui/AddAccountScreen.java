@@ -38,7 +38,7 @@ public class AddAccountScreen extends Screen {
     @Override
     protected void init() {
         int cx = this.width / 2;
-        int y = 50;
+        int y = 58;
 
         this.addDrawableChild(CyclingButtonWidget.<AccountType>builder(
             t -> Text.literal(switch (t) {
