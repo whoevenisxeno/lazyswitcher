@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "accountswitcher",
+  "version": "${version}",
+  "name": "LazySwitcher",
+  "description": "LazySwitcher - switch Minecraft accounts in-game (Microsoft, offline, alt services, Prism import) and auto-reconnect to the server you were on.",
+  "authors": ["xeno"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.xeno.accountswitcher.AccountSwitcherMod"]
+  },
+  "mixins": ["accountswitcher.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "fabric-api": "*",
+    "minecraft": "~1.21.11"
+  }
+}

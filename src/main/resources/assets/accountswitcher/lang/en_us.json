@@ -1,0 +1,20 @@
+{
+  "accountswitcher.button.switch": "LazySwitcher",
+  "accountswitcher.button.add": "Add Account",
+  "accountswitcher.button.remove": "Remove",
+  "accountswitcher.button.back": "Back",
+  "accountswitcher.button.cancel": "Cancel",
+  "accountswitcher.screen.title": "LazySwitcher",
+  "accountswitcher.screen.tagline": "in-game account switching",
+  "accountswitcher.current": "Current: %s",
+  "accountswitcher.reconnecting": "LazySwitcher: switching account",
+  "accountswitcher.hint.reconnect": "Switching while on a server reconnects you as the new account.",
+  "accountswitcher.add.title": "Add Account",
+  "accountswitcher.add.type": "Account Type",
+  "accountswitcher.add.confirm": "Add Account",
+  "accountswitcher.msa.title": "Microsoft Login",
+  "accountswitcher.msa.instruction": "Visit the URL below and enter the code:",
+  "accountswitcher.msa.open_browser": "Open in Browser",
+  "accountswitcher.msa.copy_code": "Copy Code",
+  "accountswitcher.msa.waiting": "Waiting for sign in..."
+}

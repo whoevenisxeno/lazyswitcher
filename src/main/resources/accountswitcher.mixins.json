@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "dev.xeno.accountswitcher.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "MinecraftClientAccessor",
+    "MinecraftClientMixin",
+    "TitleScreenMixin",
+    "GameMenuScreenMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}
