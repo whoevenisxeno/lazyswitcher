@@ -2,8 +2,13 @@ package dev.xeno.accountswitcher.mixin;
 
 import com.mojang.authlib.minecraft.UserApiService;
 import net.minecraft.client.MinecraftClient;
+//? if <1.20.5 {
+/*import net.minecraft.client.util.ProfileKeys;
+import net.minecraft.client.util.Session;
+*///?} else {
 import net.minecraft.client.session.ProfileKeys;
 import net.minecraft.client.session.Session;
+//?}
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;

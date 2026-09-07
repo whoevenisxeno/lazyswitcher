@@ -2,7 +2,11 @@ package dev.xeno.accountswitcher;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
+//? if <1.20.5 {
+/*import net.minecraft.client.util.Session;
+*///?} else {
 import net.minecraft.client.session.Session;
+//?}
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

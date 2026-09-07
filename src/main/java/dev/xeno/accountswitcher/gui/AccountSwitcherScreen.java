@@ -8,7 +8,9 @@ import dev.xeno.accountswitcher.auth.AuthManager;
 import dev.xeno.accountswitcher.auth.ServerReconnector;
 import dev.xeno.accountswitcher.auth.SessionSwapper;
 import net.minecraft.client.MinecraftClient;
+//? if >=1.21.11 {
 import net.minecraft.client.gui.Click;
+//?}
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -159,6 +161,23 @@ public class AccountSwitcherScreen extends Screen {
         super.render(ctx, mouseX, mouseY, delta);
     }
 
+    //? if <1.21.11 {
+    /*@Override
+    public boolean mouseClicked(double mx, double my, int button) {
+        int lx = this.width / 2 - LIST_W / 2;
+        int rows = visibleRows();
+        if (mx >= lx && mx <= lx + LIST_W && my >= LIST_TOP && my < LIST_TOP + rows * ENTRY_H) {
+            int clicked = scrollOffset + (int) (my - LIST_TOP) / ENTRY_H;
+            if (clicked < accounts.size()) {
+                selectedIndex = clicked;
+                switchBtn.active = !working;
+                removeBtn.active = clicked >= prismCount;
+                return true;
+            }
+        }
+        return super.mouseClicked(mx, my, button);
+    }
+    *///?} else {
     @Override
     public boolean mouseClicked(Click click, boolean bl) {
         int lx = this.width / 2 - LIST_W / 2;
@@ -175,13 +194,23 @@ public class AccountSwitcherScreen extends Screen {
         }
         return super.mouseClicked(click, bl);
     }
+    //?}
 
+    //? if <1.20.5 {
+    /*@Override
+    public boolean mouseScrolled(double mx, double my, double amount) {
+        int max = Math.max(0, accounts.size() - visibleRows());
+        scrollOffset = Math.max(0, Math.min(max, scrollOffset - (int) Math.signum(amount)));
+        return true;
+    }
+    *///?} else {
     @Override
     public boolean mouseScrolled(double mx, double my, double hAmt, double vAmt) {
         int max = Math.max(0, accounts.size() - visibleRows());
         scrollOffset = Math.max(0, Math.min(max, scrollOffset - (int) Math.signum(vAmt)));
         return true;
     }
+    //?}
 
     private void beginWork(String msg) {
         working = true;

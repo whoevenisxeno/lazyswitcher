@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "dev.xeno.accountswitcher.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "${java}",
   "client": [
     "MinecraftClientAccessor",
     "MinecraftClientMixin",

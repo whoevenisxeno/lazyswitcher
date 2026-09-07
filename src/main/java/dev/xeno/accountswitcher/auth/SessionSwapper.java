@@ -7,8 +7,13 @@ import dev.xeno.accountswitcher.account.AccountType;
 import dev.xeno.accountswitcher.account.SavedAccount;
 import dev.xeno.accountswitcher.mixin.MinecraftClientAccessor;
 import net.minecraft.client.MinecraftClient;
+//? if <1.20.5 {
+/*import net.minecraft.client.util.ProfileKeys;
+import net.minecraft.client.util.Session;
+*///?} else {
 import net.minecraft.client.session.ProfileKeys;
 import net.minecraft.client.session.Session;
+//?}
 
 import java.util.Optional;
 import java.util.UUID;
@@ -18,8 +23,18 @@ public final class SessionSwapper {
 
     public static void apply(MinecraftClient mc, SavedAccount acc, String token) {
         String access = acc.type == AccountType.OFFLINE || token == null ? "" : token;
+        //? if <1.20.5 {
+        /*Session session = new Session(
+            acc.username, acc.uuid, access, Optional.empty(), Optional.empty(),
+            acc.type == AccountType.MICROSOFT ? Session.AccountType.MSA : Session.AccountType.LEGACY);
+        *///?} else if <1.21.11 {
+        /*Session session = new Session(
+            acc.username, UUID.fromString(acc.uuid), access, Optional.empty(), Optional.empty(),
+            acc.type == AccountType.MICROSOFT ? Session.AccountType.MSA : Session.AccountType.LEGACY);
+        *///?} else {
         Session session = new Session(
             acc.username, UUID.fromString(acc.uuid), access, Optional.empty(), Optional.empty());
+        //?}
         applySession(mc, session);
         AccountSwitcherMod.LOGGER.info("Now playing as {} ({})", acc.username, acc.uuid);
     }

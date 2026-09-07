@@ -40,6 +40,18 @@ public class AddAccountScreen extends Screen {
         int cx = this.width / 2;
         int y = 58;
 
+        //? if <1.21.11 {
+        /*this.addDrawableChild(CyclingButtonWidget.<AccountType>builder(
+            t -> Text.literal(switch (t) {
+                case MICROSOFT   -> "Microsoft (MSA)";
+                case OFFLINE     -> "Offline / Cracked";
+                case ALT_SERVICE -> "Alt Service";
+            }))
+            .values(AccountType.values())
+            .initially(selectedType)
+            .build(cx - 100, y, 200, 20, Text.literal("Type"),
+                (btn, val) -> { selectedType = val; rebuildWidgets(); }));
+        *///?} else {
         this.addDrawableChild(CyclingButtonWidget.<AccountType>builder(
             t -> Text.literal(switch (t) {
                 case MICROSOFT   -> "Microsoft (MSA)";
@@ -49,6 +61,7 @@ public class AddAccountScreen extends Screen {
             .values(AccountType.values())
             .build(cx - 100, y, 200, 20, Text.literal("Type"),
                 (btn, val) -> { selectedType = val; rebuildWidgets(); }));
+        //?}
         y += 26;
 
         aliasField = new TextFieldWidget(this.textRenderer, cx - 100, y, 200, 20, Text.literal(""));
@@ -66,10 +79,18 @@ public class AddAccountScreen extends Screen {
             clientIdField.setMaxLength(64);
             this.addDrawableChild(clientIdField);
         } else if (selectedType == AccountType.ALT_SERVICE) {
+            //? if <1.21.11 {
+            /*this.addDrawableChild(CyclingButtonWidget.<String>builder(Text::literal)
+                .values("TheAltening", "EasyMC")
+                .initially(selectedService)
+                .build(cx - 100, y, 200, 20, Text.literal("Service"),
+                    (btn, val) -> selectedService = val));
+            *///?} else {
             this.addDrawableChild(CyclingButtonWidget.<String>builder(Text::literal, () -> selectedService)
                 .values("TheAltening", "EasyMC")
                 .build(cx - 100, y, 200, 20, Text.literal("Service"),
                     (btn, val) -> selectedService = val));
+            //?}
             y += 26;
             tokenField = new TextFieldWidget(this.textRenderer, cx - 100, y, 200, 20, Text.literal(""));
             tokenField.setPlaceholder(Text.literal("your_token@thealtening.com"));
